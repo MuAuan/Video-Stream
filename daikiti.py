@@ -1,5 +1,3 @@
-#labelling.py
- 
 from flask import Flask, render_template
 import glob
 from time import time
