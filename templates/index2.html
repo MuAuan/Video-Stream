@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="jp">
+<head>
+    <meta charset="UTF-8">
+    <title>カメラ撮影画像ラベリングサイト</title>
+</head>
+<body>
+    <h1>撮影画像を分類してください</h1>
+    <img src="{{ img }}" style="width: 500px;">
+    <form action="{{ url_for('sampling')  }}" method="POST">
+    <input type="hidden" name="img_path" value="{{ img }}">
+
+      {% if category_list %}
+
+      {% for category in category_list %}
+      <input type="radio" name="category" value="{{ category }}">
+      {{ category }}
+      <br/>
+      {% endfor %}
+
+      {% else %}
+      static/labeledにカテゴリーフォルダを作成してください。
+
+      {% endif %}
+      
+
+      <input type="submit" value="Sampling">
+    </form>
+</body>
+</html>
+
