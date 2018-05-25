@@ -22,7 +22,7 @@ start_time=time.time()
 @app.route("/")
 def index():
     img_path, category_path=yomikomi()
-    return render_template('index2.html', img=img_path[len(img_path)-1], category=category_path) 
+    return render_template('index4.html', img=img_path[len(img_path)-1], category=category_path) 
 
 def yomikomi():
     batch_size = 32
