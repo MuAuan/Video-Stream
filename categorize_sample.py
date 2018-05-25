@@ -52,6 +52,7 @@ def yomikomi():
               optimizer=opt,
               metrics=['accuracy'])
     model.summary()
+    #model.load_weights('params_model_epoch_003.hdf5')
     
     # 引数で指定した画像ファイルを読み込む
     # サイズはVGG16のデフォルトである224x224にリサイズされる
