@@ -25,7 +25,7 @@ def index():
     return render_template('index4.html', img=img_path[len(img_path)-1], category=category_path) 
 
 def yomikomi():
-    batch_size = 32
+    batch_size = 2
     num_classes = 1000
     img_rows, img_cols=224,224
     input_tensor = Input((img_rows, img_cols, 3))
@@ -33,7 +33,8 @@ def yomikomi():
     img_path =  glob.glob("static/sample/*.jpg")
     # 学習済みのVGG16をロード
     # 構造とともに学習済みの重みも読み込まれる
-    
+    model = VGG16(weights='imagenet', include_top=True, input_tensor=input_tensor)
+    """
     vgg16 = VGG16(include_top=False, weights='imagenet', input_tensor=input_tensor)
     # FC層を構築
     top_model = Sequential()
@@ -44,6 +45,7 @@ def yomikomi():
     
     # VGG16とFCを接続
     model = Model(input=vgg16.input, output=top_model(vgg16.output))
+    """
     # Fine-tuningのときはSGDの方がよい⇒adamがよかった
     lr = 0.00001 #0.00001
     opt = keras.optimizers.Adam(lr, beta_1=0.5, beta_2=0.999, epsilon=1e-08, decay=1e-6) #1e-6
@@ -73,9 +75,9 @@ def yomikomi():
     elif preds =="△":
         preds="./△"
     else:
-        preds="./"+str(results[0][1])+str(int(100*results[0][2]))+".jpg"
+        preds=str(results[0][1])+str(int(100*results[0][2]))+".jpg"
        
-    # 分類するフォルダ名を取得
+    # 分類するフォルダ名/ファイル名を取得
     category_path = preds
     return img_path, category_path
     
