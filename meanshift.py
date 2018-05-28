@@ -17,13 +17,16 @@ if __name__ == '__main__':
     # フレームの取得
     ret,frame = cap.read()
     cv2.waitKey(5) 
-    ret,frame = cap.read()
-
-    cv2.imshow("org",frame)
+    
     cv2.waitKey(2) 
     # 追跡する枠を決定
-    roi = frame[y:y+h, x:x+w]
-    cv2.imshow("roi",roi)
+    while True:
+        ret,frame = cap.read()
+        cv2.imshow("org",frame)
+        roi = frame[y:y+h, x:x+w]
+        cv2.imshow("roi",roi)
+        if cv2.waitKey(20)>0:
+            break
     # 追跡する枠の内部を切り抜いてHSV変換
     hsv_roi =  cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
     cv2.imshow("hsv",hsv_roi)
