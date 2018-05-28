@@ -16,8 +16,6 @@ if __name__ == '__main__':
  
     # フレームの取得
     ret,frame = cap.read()
-    cv2.waitKey(5) 
-    
     cv2.waitKey(2) 
     # 追跡する枠を決定
     while True:
