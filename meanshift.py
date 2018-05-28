@@ -2,7 +2,9 @@
  
 import numpy as np
 import cv2
- 
+import time
+from timeit import default_timer as timer
+
 if __name__ == '__main__':
      
     cap = cv2.VideoCapture(0)
@@ -24,6 +26,7 @@ if __name__ == '__main__':
         roi = frame[y:y+h, x:x+w]
         cv2.imshow("roi",roi)
         if cv2.waitKey(20)>0:
+            cv2.destroyWindow("org")
             break
     # 追跡する枠の内部を切り抜いてHSV変換
     hsv_roi =  cv2.cvtColor(roi, cv2.COLOR_BGR2HSV)
@@ -36,7 +39,13 @@ if __name__ == '__main__':
     cv2.normalize(roi_hist, roi_hist, 0, 255, cv2.NORM_MINMAX)
  
     term_crit = ( cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 1 )
- 
+
+    accum_time = 0
+    curr_fps = 0
+    fps = "FPS: ??"
+    prev_time = timer()
+    start_time=prev_time
+    
     while(True):
         ret, frame = cap.read()
  
@@ -47,13 +56,26 @@ if __name__ == '__main__':
             dst = cv2.calcBackProject([hsv],[0],roi_hist,[0,180], 1)
  
             # 物体検出する
-            ret, track_window = cv2.meanShift(dst, track_window, term_crit)
+            #ret, track_window = cv2.meanShift(dst, track_window, term_crit)
+            ret, track_window = cv2.CamShift(dst, track_window, term_crit)
  
             # 物体検出で取得した座標を元のフレームで囲う
             x,y,w,h = track_window
             img_dst = cv2.rectangle(frame, (x,y), (x+w, y+h), 255, 2)
+            #cv2.imshow('SHOW MEANSHIFT IMAGE', img_dst)
+            curr_time = timer()
+            exec_time = curr_time - prev_time
+            prev_time = curr_time
+            accum_time = accum_time + exec_time
+            curr_fps = curr_fps + 1
+            if accum_time > 1:
+                accum_time = accum_time - 1
+                fps = "FPS: " + str(curr_fps)
+                curr_fps = 0
+            cv2.putText(img_dst, fps, (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1)
+            #cv2.putText(img_dst, str(dst), (x+3,y+10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1)
+            
             cv2.imshow('SHOW MEANSHIFT IMAGE', img_dst)
- 
             # qを押したら終了。
             k = cv2.waitKey(1)
             if k == ord('q'):
