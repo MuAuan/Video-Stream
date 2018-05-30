@@ -43,6 +43,7 @@ class Camera(BaseCamera):
             img_dst = cv2.rectangle(frame, (x,y), (x+w, y+h), 255, 2)
             cv2.imshow("SHOW MEANSHIFT IMAGE",img_dst)
             roi = frame[y:y+h, x:x+w]
+            yield cv2.imencode('.jpg', img_dst)[1].tobytes()
             if cv2.waitKey(20)>0:
                 txt=yomikomi(roi)
                 break
@@ -72,11 +73,11 @@ class Camera(BaseCamera):
         ret, frame = cap.read()
         while(True):
             #ret, frame = cap.read()
-            """
+            
             if not ret:
                 print("Done!")
                 return
-            """    
+                
             # フレームをHSV変換する
             hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
             # 上で計算したヒストグラムを特徴量として、画像の類似度を求める
@@ -100,16 +101,20 @@ class Camera(BaseCamera):
                 curr_fps = 0
 
             cv2.putText(img_dst, fps, (30,50), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0), 1)
+            
             cv2.imshow('SHOW MEANSHIFT IMAGE', img_dst)
+            yield cv2.imencode('.jpg', img_dst)[1].tobytes()
             img_dst = cv2.resize(img_dst, (int(h), w))
             out.write(img_dst)
+            
             # qを押したら終了。
             k = cv2.waitKey(1)
             if k == ord('q'):
                 out.release()
                 break
+            
             ret, frame = cap.read()
-            yield cv2.imencode('.jpg', img_dst)[1].tobytes()
+            #yield cv2.imencode('.jpg', img_dst)[1].tobytes()
             
 def yomikomi(img):
     batch_size = 2
