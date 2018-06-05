@@ -1,17 +1,13 @@
-# -*- coding: utf-8 -*-
 #!/usr/bin/env python
 from importlib import import_module
 import os
 from flask import Flask, render_template, Response
-from ssd_v2 import SSD300v2 as SSD
-
 
 # import camera driver
-if os.environ.get('CAMERA'):
-    Camera = import_module('camera_' + os.environ['CAMERA']).Camera
-else:
-    from Camera_meanshift import Camera
-    #from camera_objectDetection import Camera
+#from camera_opencv import Camera
+#from Camera_meanshift import Camera
+#from camera import Camera
+from camera_objectDetection import Camera
 
 # Raspberry Pi camera module (requires picamera package)
 # from camera_pi import Camera
@@ -41,4 +37,6 @@ def video_feed():
 
 
 if __name__ == '__main__':
-    app.run(host='192.168.0.24', threaded=True, debug=False)
+    debug=True
+    threaded=True
+    app.run(host="0.0.0.0")
