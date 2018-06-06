@@ -153,7 +153,7 @@ class Camera(BaseCamera):
             cv2.rectangle(to_draw, (0,0), (50, 17), (255,255,255), -1)  #to_draw
             cv2.putText(to_draw, fps, (3,10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1) #to_draw
             #yield cv2.imencode('.jpg', to_draw)[1].tobytes()
-            to_draw = cv2.resize(to_draw, (int(input_shape[0]*vidar), input_shape[1]))
+            to_draw = cv2.resize(to_draw, (int(input_shape[0]*1), input_shape[1]))
             #cv2.imshow(ORG_WINDOW_NAME, to_draw)  #to_draw
             #out.write(to_draw)  #add to_draw
             
