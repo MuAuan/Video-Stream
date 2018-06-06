@@ -25,35 +25,18 @@ def cv_fourcc(c1, c2, c3, c4):
             ((ord(c3) & 255) << 16) + ((ord(c4) & 255) << 24)
 
 class Camera(BaseCamera):
-    video_source = 0
+    video_source = 1
 
     @staticmethod
     def set_video_source(source):
         Camera.video_source = source
-    """
-    @staticmethod
-    def frames():
-        camera = cv2.VideoCapture(Camera.video_source)
-        if not camera.isOpened():
-            raise RuntimeError('Could not start camera.')
-        vid_test = Camera
-        while True:
-            # read current frame
-            #_, img = camera.read()
-            img = vid_test.run(0)
-            # encode as a jpeg image and return it
-            yield cv2.imencode('.jpg', img)[1].tobytes()
-    """   
-        
-#class VideoTest(object):
-
     
     @staticmethod
     def frames():
         video_path = 0 
         start_frame = 0 
         conf_thresh = 0.6
-        input_shape = (300,300,3)
+        input_shape = (480,300,3)
         class_names = ["background", "aeroplane", "bicycle", "bird", "boat", "bottle", "bus", "car", "cat", "chair", "cow", "diningtable", "dog", "horse", "motorbike", "person", "pottedplant", "sheep", "sofa", "train", "tvmonitor"]
         NUM_CLASSES = len(class_names)
         num_classes=NUM_CLASSES
@@ -77,7 +60,7 @@ class Camera(BaseCamera):
         #GRAY_WINDOW_NAME = "gray"
         #OUT_FILE_NAME = "real_SSD_result.mp4"
         
-        vid = cv2.VideoCapture(0)
+        vid = cv2.VideoCapture(Camera.video_source)
         width, height = input_shape[0], input_shape[1]  #input_shape
         """
         out = cv2.VideoWriter(OUT_FILE_NAME, \
@@ -102,7 +85,7 @@ class Camera(BaseCamera):
         fps = "FPS: ??"
         prev_time = timer()
         start_time=prev_time
-        cv2.namedWindow(ORG_WINDOW_NAME)
+        #cv2.namedWindow(ORG_WINDOW_NAME)
         
         while True:
             retval, orig_image = vid.read()
@@ -169,15 +152,15 @@ class Camera(BaseCamera):
             
             cv2.rectangle(to_draw, (0,0), (50, 17), (255,255,255), -1)  #to_draw
             cv2.putText(to_draw, fps, (3,10), cv2.FONT_HERSHEY_SIMPLEX, 0.35, (0,0,0), 1) #to_draw
-        
-            to_draw = cv2.resize(to_draw, (int(input_shape[0]*1), input_shape[1]))
+            #yield cv2.imencode('.jpg', to_draw)[1].tobytes()
+            to_draw = cv2.resize(to_draw, (int(input_shape[0]*vidar), input_shape[1]))
             #cv2.imshow(ORG_WINDOW_NAME, to_draw)  #to_draw
             #out.write(to_draw)  #add to_draw
             
             if cv2.waitKey(INTERVAL)>= 0:   # & 0xFF == ord('q'):
                 break
-            elif curr_time-start_time>=60:
-                break
+            #elif curr_time-start_time>=60:
+            #    break
             yield cv2.imencode('.jpg', to_draw)[1].tobytes()
         vid.release()   #add
         #out.release()   #add
